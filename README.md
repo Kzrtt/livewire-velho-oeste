@@ -6,6 +6,8 @@ Sistema de slides para a palestra **"Livewire, o Inimigo do JavaScript (que viro
 
 https://github.com/user-attachments/assets/placeholder
 
+https://drive.google.com/file/d/1uWL1NPypg81EPU0tUZoyOnawHKXSF890/view
+
 > Se o video acima nao carregar, veja o arquivo `public/videos/livewire-velho-oeste.mkv` no repositorio.
 
 ## Stack
