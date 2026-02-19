@@ -4,7 +4,7 @@ Sistema de slides para a palestra **"Livewire, o Inimigo do JavaScript (que viro
 
 ## Demo
 
-[<img src="https://img.youtube.com/vi/eblRwsKyUSA/hqdefault.jpg" width="50%">]([https://youtu.be/<VIDEO_ID>](https://www.youtube.com/watch?v=eblRwsKyUSA))
+[<img src="https://img.youtube.com/vi/eblRwsKyUSA/hqdefault.jpg" width="50%">]([https://youtu.be/eblRwsKyUSA])
 
 https://drive.google.com/file/d/1uWL1NPypg81EPU0tUZoyOnawHKXSF890/view
 
