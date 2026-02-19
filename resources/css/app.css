@@ -1,0 +1,69 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Slide entrance animation */
+@keyframes slide-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-enter {
+    animation: slide-fade-in 0.5s ease-out both;
+}
+
+/* Staggered children animation */
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-up-1 { animation: fade-up 0.5s ease-out 0.1s both; }
+.fade-up-2 { animation: fade-up 0.5s ease-out 0.2s both; }
+.fade-up-3 { animation: fade-up 0.5s ease-out 0.3s both; }
+.fade-up-4 { animation: fade-up 0.5s ease-out 0.4s both; }
+.fade-up-5 { animation: fade-up 0.5s ease-out 0.5s both; }
+
+/* Custom scrollbar matching progress bar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(68, 64, 60, 0.3);
+    border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #f97316, #f59e0b);
+    border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #ea580c, #d97706);
+}
+
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #f97316 rgba(68, 64, 60, 0.3);
+}
