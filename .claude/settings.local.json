@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:livewire.laravel.com)",
+      "WebSearch",
+      "WebFetch(domain:blog.sachinsanchania.com)"
+    ]
+  }
+}

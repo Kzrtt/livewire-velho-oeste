@@ -36,9 +36,10 @@
             nextSlide: {{ $nextSlide ? $nextSlide : 'null' }},
             touchStartX: 0,
             touchEndX: 0,
+            navigationEnabled: true,
             navigating: false,
             navigate(direction) {
-                if (this.navigating) return;
+                if (!this.navigationEnabled || this.navigating) return;
                 let target = null;
                 if (direction === 'prev' && this.prevSlide) target = this.prevSlide;
                 else if (direction === 'next' && this.nextSlide) target = this.nextSlide;
@@ -55,6 +56,7 @@
                 this.touchStartX = e.changedTouches[0].screenX;
             },
             handleTouchEnd(e) {
+                if (!this.navigationEnabled) return;
                 this.touchEndX = e.changedTouches[0].screenX;
                 const diff = this.touchStartX - this.touchEndX;
                 if (Math.abs(diff) > 50) {
@@ -63,6 +65,7 @@
                 }
             }
         }"
+        x-on:slide-navigation.window="navigationEnabled = $event.detail.enabled"
         x-on:keydown.arrow-left.window="navigate('prev')"
         x-on:keydown.arrow-right.window="navigate('next')"
         x-on:keydown.a.window="navigate('prev')"
@@ -120,6 +123,9 @@
             </button>
         @endif
     </div>
+
+    <x-ts-dialog />
+    <x-ts-toast />
 
     @livewireScripts
 </body>

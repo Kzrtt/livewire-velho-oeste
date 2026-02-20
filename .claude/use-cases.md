@@ -196,194 +196,142 @@ Essa diferenca de volume e **intencional**: no demo de Islands (slide 12), cada 
 
 ---
 
-### Slide 5 — "4 Meses de Livewire" (Directives Showcase)
-**Componente do caso de uso:** `UseCase05WantedBoard`
+### Slide 5 — "4 Meses de Livewire" (Directives Showcase) ✅ IMPLEMENTADO
+**Componente:** `wanted-board` (MFC em `resources/views/components/⚡wanted-board/`)
 
-#### Descricao
-Um **"Quadro de Procurados"** (Wanted Board) que funciona como um mini-app CRUD demonstrando multiplas diretivas Livewire em um unico cenario coeso. O publico ve um painel estilo velho oeste com fichas de bandidos, podendo buscar, filtrar, capturar e interagir.
+#### Status: Completo
+Implementado como componente Livewire separado, nested no slide 5 via `@livewire('wanted-board')`.
+
+#### Arquitetura
+- **Toggle:** Alpine.js (`x-data="{ showDemo: false }"`) — sem round-trip ao servidor
+- **Navegacao:** Layout recebe `$dispatch('slide-navigation')` para desabilitar setas/A/D/swipe durante o demo
+- **Code Viewer:** Modal Alpine.js com `x-teleport="body"`, tabs PHP/Blade, syntax highlight manual
+- **Badges:** Labels `absolute` com `bg-orange-500/20 text-orange-400 text-[10px] font-mono` em cada elemento interativo
 
 #### Diretivas Demonstradas
-| Diretiva | Como e Demonstrada |
-|----------|-------------------|
-| `wire:model.live` | Campo de busca filtra outlaws em tempo real |
-| `wire:click` | Botoes "Capturar" e "Libertar" mudam status do outlaw |
-| `wire:loading` | Spinner aparece durante acoes de captura |
-| `wire:confirm` | Confirmacao ao tentar libertar um bandido perigoso |
-| `wire:dirty` | Indicador visual ao editar a recompensa de um outlaw |
-| `wire:poll.5s` | Contador de "novos avistamentos" atualiza a cada 5s |
-| `wire:key` | Cada card de outlaw tem key unica para morph eficiente |
-| `wire:transition` | Cards animam ao entrar/sair da lista filtrada |
+| Diretiva | Elemento | Comportamento |
+|----------|----------|---------------|
+| `wire:model.live` | Campo de busca | Filtra outlaws em tempo real (debounce 300ms) |
+| `wire:model` | Select de filtro | Filtra por status (wanted/captured/escaped) |
+| `wire:click` | Botoes Capturar/Soltar | Muda status do outlaw no banco |
+| `wire:loading` | Spinner nos botoes | Aparece durante delay artificial de 600ms |
+| `wire:confirm` | Botao Soltar | Dialogo de confirmacao antes de liberar bandido |
+| `wire:dirty` | Input de edicao de recompensa | Badge "Alterado" + borda amarela |
+| `wire:poll.5s` | Contador de avistamentos | Incrementa automaticamente a cada 5s |
+| `wire:key` | Cada card de outlaw | Key unica para morph eficiente no `@foreach` |
+| `wire:transition` | Cards | Animacao ao entrar/sair da lista filtrada |
 
 #### Tabelas Envolvidas
-- `outlaws` (principal)
+- `outlaws` (com eager loading de `gangs` via `with('gang')`)
 
-#### Layout do Caso de Uso
-```
-+--------------------------------------------------+
-|  [Buscar bandido... ] 🔍    Filtro: [Todos ▼]    |
-|  Avistamentos hoje: 12 (atualiza via poll)        |
-+--------------------------------------------------+
-|  +-------------+  +-------------+  +----------+  |
-|  | 🤠 "El Loco"|  | 🤠 "Snake"  |  | 🤠 ...   |  |
-|  | $5,000      |  | $2,500      |  | ...      |  |
-|  | Roubo       |  | Fraude      |  | ...      |  |
-|  | [Capturar]  |  | [Capturar]  |  | ...      |  |
-|  +-------------+  +-------------+  +----------+  |
-+--------------------------------------------------+
-```
-
-#### Detalhes de Implementacao
-- Componente Livewire com propriedades: `$search`, `$statusFilter`, `$editingBounty`
-- Computed property para lista filtrada com Eloquent query
-- Metodos: `capture($id)`, `release($id)`, `updateBounty($id, $value)`
-- A busca usa `wire:model.live.debounce.300ms` para nao sobrecarregar
-- Cada acao de captura tem um `sleep(1)` artificial para demonstrar `wire:loading`
+#### Arquivos
+- `resources/views/components/⚡wanted-board/wanted-board.php` — Classe PHP
+- `resources/views/components/⚡wanted-board/wanted-board.blade.php` — Template Blade
+- `resources/views/components/slides/⚡s05-four-months/s05-four-months.blade.php` — Modificado (toggle + nested)
+- `resources/views/components/layouts/presentation.blade.php` — Modificado (navigationEnabled guard)
+- `resources/css/app.css` — Adicionado `[x-cloak]` style
 
 ---
 
-### Slide 9 — "Blaze" (Intelligent Rendering)
-**Componente do caso de uso:** `UseCase09SaloonDashboard`
+### Slide 9 — "Blaze" (Intelligent Rendering) ✅ IMPLEMENTADO
+**Componente:** `saloon-dashboard` (MFC em `resources/views/components/⚡saloon-dashboard/`)
 
-#### Descricao
-Um **"Painel do Saloon"** com muitos elementos estaticos (decoracao, menu fixo, regras da casa) e apenas **um contador dinamico** de pedidos. O objetivo e demonstrar que o Blaze so re-renderiza a parte dinamica, ignorando todo o conteudo estatico. A tela tera um indicador visual mostrando "Nodes processados: 1" vs "Total de nodes: ~80+".
+#### Status: Completo
+Implementado como componente Livewire separado, nested no slide 9 via `@livewire('saloon-dashboard')`.
+
+#### Arquitetura
+- **Toggle:** Alpine.js (`x-data="{ showDemo: false }"`) — mesmo padrao do slide 5
+- **Navegacao:** Layout recebe `$dispatch('slide-navigation')` para desabilitar setas durante demo
+- **Code Viewer:** Modal Alpine.js com `x-teleport="body"`, tabs PHP/Blade
+- **Modais:** TallStackUI `<x-ts-modal wire="newOrderModal">` para novo pedido completo
+- **Toasts:** TallStackUI `$this->toast()->success()` para feedback de pedidos
+- **Interacoes:** Trait `TallStackUi\Traits\Interactions`
 
 #### O que Demonstra
-- Blaze identifica regioes estaticas em compile-time
-- Apenas a regiao do contador e re-renderizada
-- O restante do template (80+ nodes) e completamente ignorado
-- Indicador visual de "economia de render" para a plateia entender o impacto
+- Template intencionalmente "pesado" com ~90+ nodes estaticos (cardapio 10 itens, 8 regras, equipe 5 pessoas, atmosfera 5 barras, decoracao 4 cards)
+- **Unica parte dinamica:** contador de pedidos (`$orderCount`)
+- Botao "Pedido Rapido" cria pedido aleatorio e incrementa contador
+- Botao "Novo Pedido Completo" abre modal TallStackUI com formulario
+- Indicador visual: "Blaze: 1 node re-renderizado / ~90+ nodes totais"
+- Labels "ESTATICO" e "DINAMICO" marcam visualmente as zonas
 
 #### Tabelas Envolvidas
-- `saloon_orders` (para contagem dinamica)
+- `saloon_orders` (criacao de pedidos)
+- `saloon_drinks` (lista de bebidas disponiveis para o modal)
 
-#### Layout do Caso de Uso
-```
-+--------------------------------------------------+
-|  🍺 SALOON DO VELHO OESTE                        |
-+--------------------------------------------------+
-|  MENU (estatico)     |  REGRAS (estatico)        |
-|  - Whiskey $3        |  - Sem armas no balcao    |
-|  - Cerveja $1        |  - Pagamento adiantado    |
-|  - Sarsaparilla $2   |  - Sem duelos dentro      |
-|  - Cafe $0.50        |  - Respeite o barman      |
-+----------------------+---------------------------+
-|  📊 PEDIDOS AGORA: [ 47 ]  [+1 Pedido]           |
-|  ⚡ Blaze: 1 node re-rendered / 84 total nodes   |
-+--------------------------------------------------+
-|  DECORACAO (estatico) - quadros, molduras, etc    |
-+--------------------------------------------------+
-```
-
-#### Detalhes de Implementacao
-- Template intencionalmente "pesado" com muitos elementos estaticos HTML
-- Unica parte dinamica: contador de pedidos (`$orderCount`)
-- Botao "[+1 Pedido]" incrementa o contador via `wire:click`
-- Cria um novo `saloon_orders` no banco a cada clique
-- Indicador de nodes re-renderizados (pode ser simulado visualmente ou real via JS hook)
-- Toda a "decoracao" estatica e proposital: demonstra que Blaze ignora tudo isso
+#### Arquivos
+- `resources/views/components/⚡saloon-dashboard/saloon-dashboard.php` — Classe PHP
+- `resources/views/components/⚡saloon-dashboard/saloon-dashboard.blade.php` — Template Blade
+- `resources/views/components/slides/⚡s09-blaze/s09-blaze.blade.php` — Modificado (toggle + nested)
 
 ---
 
-### Slide 11 — "Nova API para Frontend" (this. API)
-**Componente do caso de uso:** `UseCase11ApiShowdown`
+### Slide 11 — "Nova API para Frontend" (this. API) ✅ IMPLEMENTADO
+**Componente:** `api-showdown` (MFC em `resources/views/components/⚡api-showdown/`)
 
-#### Descricao
-Um **"Duelo de APIs"** onde a mesma acao e executada lado a lado usando a sintaxe antiga (`$wire`) e a nova (`this.`). O caso de uso mostra um mini-componente de votacao em um outlaw ("Mais Procurado da Semana") onde o publico ve ambas as sintaxes executando a mesma logica.
+#### Status: Completo
+Implementado como componente Livewire separado, nested no slide 11 via `@livewire('api-showdown')`.
+
+#### Arquitetura
+- **Toggle:** Alpine.js (`x-data="{ showDemo: false }"`) — mesmo padrao dos slides 5 e 9
+- **Navegacao:** Layout recebe `$dispatch('slide-navigation')` para desabilitar setas durante demo
+- **Code Viewer:** Modal Alpine.js com `x-teleport="body"`, tabs PHP/Blade
+- **Toasts:** TallStackUI `$this->toast()->success()` para feedback de votos
+- **Interacoes:** Trait `TallStackUi\Traits\Interactions`
 
 #### O que Demonstra
-- Sintaxe `this.` e mais natural e familiar (parece Vue/React/Alpine)
-- A mesma funcionalidade, codigo mais limpo
-- Integracao com Alpine.js usando `this.` de forma fluida
-- `this.$wire` -> `this.` como substituicao direta
+- **Entangle:** Campo de texto sincronizado — lado esquerdo usa `$wire.entangle('highlight')` via Alpine, lado direito usa `wire:model.live` direto (sem Alpine, sem boilerplate)
+- **Votacao:** 4 outlaws mais perigosos com contagem de votos — esquerdo usa `@click="$wire.vote(id)"` (Alpine inline), direito usa `wire:click="vote(id)"` (Livewire nativo)
+- **Script context:** Card comparativo mostrando que `this.` funciona dentro de `<script>` no componente (onde `this === $wire`)
+- **Resultado identico:** Ambos chamam o mesmo metodo PHP `vote()`, mesma resposta
+- **Reset:** Botao para zerar votos e demonstrar novamente
+- Votos mantidos em estado do componente (array), sem coluna extra no banco
+- **Nota tecnica:** `this.` so funciona dentro de `<script>` tags (Livewire faz bind de `this` para `$wire`). Em Alpine inline (`@click`), `$wire` continua sendo o magic variable correto
 
 #### Tabelas Envolvidas
-- `outlaws` (para votacao)
+- `outlaws` (carrega 4 mais perigosos para votacao)
 
-#### Layout do Caso de Uso
-```
-+--------------------------------------------------+
-|  ⚔️ DUELO DE APIS                                 |
-+--------------------------------------------------+
-|  SINTAXE ANTIGA ($wire)  |  SINTAXE NOVA (this.) |
-|  -----------------------  |  -------------------- |
-|  🤠 El Loco              |  🤠 El Loco           |
-|  Votos: 12               |  Votos: 12            |
-|  [👍 Votar]              |  [👍 Votar]           |
-|                           |                       |
-|  $wire.vote(1)           |  this.vote(1)         |
-|  $wire.votes             |  this.votes           |
-|  $wire.entangle('x')    |  this.x (reativo)     |
-+--------------------------------------------------+
-```
-
-#### Detalhes de Implementacao
-- Dois mini-componentes lado a lado (ou um componente com dois "lados")
-- Lado esquerdo: usa Alpine com `$wire.metodo()` e `$wire.propriedade` (sintaxe v3)
-- Lado direito: usa Alpine com `this.metodo()` e `this.propriedade` (sintaxe v4)
-- Ambos chamam o mesmo backend, demonstrando que o resultado e identico
-- Exibe o trecho de codigo JS abaixo de cada lado para comparacao visual
-- Votar incrementa um campo `votes` no outlaw (coluna adicional ou cache)
-
-> **Nota:** Como o Livewire 4 suporta ambas as sintaxes durante a transicao, ambos os lados funcionam de verdade. O ponto e mostrar que `this.` e mais limpo.
+#### Arquivos
+- `resources/views/components/⚡api-showdown/api-showdown.php` — Classe PHP
+- `resources/views/components/⚡api-showdown/api-showdown.blade.php` — Template Blade
+- `resources/views/components/slides/⚡s11-new-api/s11-new-api.blade.php` — Modificado (toggle + nested)
 
 ---
 
-### Slide 12 — "Islands" (Lazy Loading & Isolation)
-**Componente do caso de uso:** `UseCase12TownDashboard`
+### Slide 12 — "Islands" (Lazy Loading & Isolation) ✅ IMPLEMENTADO
+**Componente:** `town-dashboard` (MFC em `resources/views/components/⚡town-dashboard/`)
 
-#### Descricao
-Um **"Painel da Cidade"** com 3 widgets independentes, cada um carregado como uma Island separada. O publico ve os placeholders/skeletons aparecerem primeiro e os widgets carregarem progressivamente. A diferenca de tempo de carregamento e **real**: cada widget consulta tabelas com volumes drasticamente diferentes de dados (30, 500 e 2000 registros), demonstrando que o tempo depende da complexidade da query, sem nenhum delay artificial.
+#### Status: Completo
+Implementado como componente Livewire separado, nested no slide 12 via `@livewire('town-dashboard')`.
+
+#### Arquitetura
+- **Toggle:** Alpine.js (`x-data="{ showDemo: false }"`) — mesmo padrao dos slides 5, 9 e 11
+- **Navegacao:** Layout recebe `$dispatch('slide-navigation')` para desabilitar setas durante demo
+- **Code Viewer:** Modal Alpine.js com `x-teleport="body"`, tabs Blade/PHP
+- **PHP minimo:** Classe do componente vazia — toda logica roda dentro de `@php` blocks em cada island
+- **Sem sleep() artificial:** Tempo de carregamento depende do volume real de dados
 
 #### O que Demonstra
-- `@island` / `@endisland` envolvendo componentes
-- Lazy loading: widgets carregam sob demanda, nao bloqueiam a pagina
+- `@island(lazy: true)` / `@endisland` envolvendo blocos de conteudo
+- `@placeholder` / `@endplaceholder` para skeleton loading com animate-pulse
+- Lazy loading: cada island carrega independentemente via request separado
 - Isolamento: cada island tem seu proprio ciclo de vida
-- Skeleton/placeholder enquanto carrega
-- TTFB reduzido (pagina renderiza rapido, widgets vem depois)
+- TTFB reduzido (pagina renderiza rapido com skeletons, dados vem depois)
 - **Diferenca real de tempo** baseada em volume de dados (nao sleep artificial)
+- Medicao de tempo real com `microtime(true)` exibida em cada island
 
-#### Tabelas Envolvidas
-| Widget | Tabelas | Registros | Complexidade | Tempo Esperado |
-|--------|---------|-----------|-------------|----------------|
-| Top Procurados | `outlaws` + `gangs` (~30+8 rows) | Leve, join simples | Rapido |
-| Pedidos do Saloon | `saloon_orders` + `saloon_drinks` + `outlaws` (~500+20+30 rows) | Medio, joins multiplos | Moderado |
-| Relatorios do Xerife | `sheriff_reports` + `outlaws` + `bounty_hunters` (~800+30+15 rows) | Medio-alto, aggregations | Mais lento |
-| Feed de Eventos | `town_events` + `outlaws` (~2000+30 rows) | Pesado, filtros + ordenacao | Mais lento |
+#### Islands e Tabelas Envolvidas
+| Island | Tabelas | Volume | Cor/Tema |
+|--------|---------|--------|----------|
+| Top Procurados | `outlaws` + `gangs` | ~38 rows | Orange |
+| Pedidos do Saloon | `saloon_orders` + `saloon_drinks` + `outlaws` | ~550 rows | Amber |
+| Relatorios do Xerife | `sheriff_reports` + `outlaws` + `bounty_hunters` | ~845 rows | Blue |
+| Feed de Eventos | `town_events` + `outlaws` | ~2000 rows | Purple |
 
-#### Layout do Caso de Uso
-```
-+--------------------------------------------------+
-|  🏘️ PAINEL DA CIDADE          [Recarregar Tudo]   |
-+--------------------------------------------------+
-|  +-- ISLAND 1 --------+  +-- ISLAND 2 ---------+ |
-|  | 🤠 Top Procurados  |  | 🍺 Pedidos Saloon   | |
-|  | outlaws + gangs    |  | orders + drinks     | |
-|  | 1. El Loco $5,000  |  | Whiskey x2 - Snake  | |
-|  | (Serpentes) ★★★★★  |  | Cerveja x1 - Joe    | |
-|  | Carregado em: 45ms |  | Carregado em: 120ms | |
-|  +--------------------+  +---------------------+ |
-|  +-- ISLAND 3 --------+  +-- ISLAND 4 ---------+ |
-|  | 📋 Relatorios      |  | 📰 Feed Eventos     | |
-|  | reports + hunters  |  | events + outlaws    | |
-|  | Avistamento: Snake |  | Assalto ao banco!   | |
-|  | Por: John "Hawk"   |  | Duelo na rua        | |
-|  | Carregado em: 200ms|  | Carregado em: 320ms | |
-|  +--------------------+  +---------------------+ |
-+--------------------------------------------------+
-```
-
-#### Detalhes de Implementacao
-- 4 sub-componentes Livewire, cada um envolvido por `@island`
-- **SEM `sleep()` artificial** — o tempo de carregamento vem do volume real de dados:
-  - Top Procurados: query em `outlaws` + join `gangs` (~38 rows) — carrega rapido
-  - Pedidos do Saloon: query em `saloon_orders` + joins `saloon_drinks` + `outlaws` (~550 rows) — moderado
-  - Relatorios do Xerife: query em `sheriff_reports` + joins `outlaws` + `bounty_hunters` (~845 rows) com aggregations — mais lento
-  - Feed de Eventos: query em `town_events` + join `outlaws` (~2030 rows) com filtros e ordenacao — mais lento
-- Cada island mede e exibe seu tempo real de carregamento (`$loadTime`)
-- Skeleton placeholders com animacao de pulse enquanto carrega
-- Botao "Recarregar Tudo" reseta as islands para demonstrar novamente
-- Cada island faz sua propria query Eloquent independente
-- As queries devem incluir operacoes realistas (joins, aggregations, ordenacao) para que a diferenca de tempo seja perceptivel
+#### Arquivos
+- `resources/views/components/⚡town-dashboard/town-dashboard.php` — Classe PHP (vazia, sem propriedades/metodos)
+- `resources/views/components/⚡town-dashboard/town-dashboard.blade.php` — Template Blade com 4 islands
+- `resources/views/components/slides/⚡s12-islands/s12-islands.blade.php` — Modificado (toggle + nested)
 
 ---
 

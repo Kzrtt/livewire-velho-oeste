@@ -1,4 +1,22 @@
-<div class="w-full max-w-5xl mx-auto space-y-8 py-4">
+<div
+    x-data="{ showDemo: false }"
+    x-effect="$dispatch('slide-navigation', { enabled: !showDemo })"
+    class="w-full max-w-5xl mx-auto space-y-8 py-4"
+>
+    {{-- Toggle button --}}
+    <div class="flex justify-end">
+        <button
+            x-on:click="showDemo = !showDemo"
+            class="px-4 py-2 rounded-lg bg-orange-500/20 border border-orange-500/40 text-orange-400 text-sm font-bold hover:bg-orange-500/30 transition-colors cursor-pointer flex items-center gap-2"
+        >
+            <i class="fad fa-exchange-alt"></i>
+            <span x-text="showDemo ? 'Ver Conteudo' : 'Ver Caso de Uso'"></span>
+        </button>
+    </div>
+
+    {{-- Slide content --}}
+    <div x-show="!showDemo" x-transition:enter.duration.300ms x-transition:leave.duration.200ms class="space-y-8">
+
     {{-- Title --}}
     <div class="text-center space-y-3 fade-up-1">
         <h2 class="text-3xl md:text-5xl font-bold text-stone-50">
@@ -79,5 +97,12 @@
             <i class="fad fa-bolt text-orange-500/70"></i>
             Uma API &mdash; dois mundos: PHP no servidor, JS no cliente
         </div>
+    </div>
+
+    </div>{{-- end x-show="!showDemo" --}}
+
+    {{-- Use case demo --}}
+    <div x-show="showDemo" x-transition:enter.duration.300ms x-transition:leave.duration.200ms x-cloak>
+        @livewire('api-showdown')
     </div>
 </div>

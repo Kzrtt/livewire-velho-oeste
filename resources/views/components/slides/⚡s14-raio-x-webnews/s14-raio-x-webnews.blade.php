@@ -23,7 +23,7 @@
                 <div class="flex items-center gap-2 mt-2 pt-2 border-t border-stone-700/30">
                     <i class="fad fa-prescription text-green-400 text-sm"></i>
                     <div>
-                        <p class="text-xs font-bold text-green-400">Remedio: @@island</p>
+                        <p class="text-xs font-bold text-green-400">Remedio: @<!-- -->@islandland</p>
                         <p class="text-[10px] text-stone-400">Isolar componentes pesados com lazy loading. Cada bloco carrega independente.</p>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                     <div class="w-9 h-9 rounded-full bg-orange-500/20 border border-orange-500/40 flex items-center justify-center mx-auto">
                         <span class="text-orange-400 font-bold text-sm">2</span>
                     </div>
-                    <p class="text-[11px] font-bold text-stone-100">Aplicar @@islands</p>
+                    <p class="text-[11px] font-bold text-stone-100">Aplicar @<!-- -->@islandlands</p>
                     <p class="text-[10px] text-stone-400">Isolar blocos caros para lazy loading imediato</p>
                 </div>
                 <div class="text-center space-y-2">
